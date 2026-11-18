@@ -1,4 +1,5 @@
 
+import { iniciarUbicacion } from "./ubicacion.js";
 import { inicializarMapa } from "./mapa.js";
 import { obtenerEdificios } from "./edificios.js";
 import { actualizarTablaPersonas } from "./tabla.js";
@@ -21,6 +22,7 @@ async function iniciarAplicacion() {
         await obtenerEdificios();
         await actualizarTablaPersonas();
         await recuperarPersona();
+        iniciarUbicacion();
 
         mostrarServidorConectado();
         estadoCarga.textContent = "Aplicación lista.";

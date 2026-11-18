@@ -4,7 +4,7 @@ import {
 } from "./config.js";
 import { solicitarAPI } from "./api.js";
 import { mostrarMensaje } from "./mensajes.js";
-import { nombrePersona, edificioPersona } from "./dom.js";
+
 import { personaId as personaIdActual } from "./estado.js";
 import { actualizarTablaPersonas } from "./tabla.js";
 
@@ -28,20 +28,12 @@ export async function actualizarPresencia() {
             throw new Error("No se encontró el registro actual.");
         }
 
-        const seleccion = edificioPersona.value;
-
-        const personaActualizada = {
-            name: nombrePersona.value.trim() || persona.name,
-            buildingId: seleccion
-                ? seleccion
-                : persona.buildingId,
-            lastSeen: new Date().toISOString()
-        };
+        const personaActualizada = { lastSeen: new Date().toISOString() };
 
         await solicitarAPI(
             `/people/${encodeURIComponent(personaId)}`,
             {
-                method: "PUT",
+                method: "PATCH",
                 body: JSON.stringify(personaActualizada)
             }
         );

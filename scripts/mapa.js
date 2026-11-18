@@ -127,3 +127,28 @@ export function mostrarEdificiosEnMapa(edificios) {
         marcadoresEdificios.push(marcador);
     });
 }
+// Marcador independiente para la posición del usuario (no mueve los edificios).
+let marcadorPersona = null;
+let circuloPrecision = null;
+export function mostrarUbicacionPersona(lat, lng, precision) {
+    if (!mapa) return;
+    if (!marcadorPersona) {
+        marcadorPersona = L.circleMarker([lat, lng], {
+            radius: 9, color: '#155eef', fillColor: '#155eef', fillOpacity: 0.8
+        }).addTo(mapa).bindPopup('Tu ubicación aproximada');
+        mapa.setView([lat, lng], 18);
+    } else {
+        marcadorPersona.setLatLng([lat, lng]);
+    }
+    if (!circuloPrecision) {
+        circuloPrecision = L.circle([lat, lng], { radius: precision, color: '#155eef', fillOpacity: 0.08 }).addTo(mapa);
+    } else {
+        circuloPrecision.setLatLng([lat, lng]).setRadius(precision);
+    }
+}
+export function limpiarUbicacionPersona() {
+    if (mapa && marcadorPersona) mapa.removeLayer(marcadorPersona);
+    if (mapa && circuloPrecision) mapa.removeLayer(circuloPrecision);
+    marcadorPersona = null;
+    circuloPrecision = null;
+}

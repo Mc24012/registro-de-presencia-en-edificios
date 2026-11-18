@@ -1,3 +1,4 @@
+import { obtenerEdificioDetectado, establecerEdificioActual, detenerUbicacion } from "./ubicacion.js";
 import { STORAGE_PERSONA_ID } from "./config.js";
 import { solicitarAPI } from "./api.js";
 import { mostrarMensaje } from "./mensajes.js";
@@ -27,11 +28,12 @@ export async function registrarPersona(evento) {
     evento.preventDefault();
 
     const nombre = nombrePersona.value.trim();
-    const buildingId = edificioPersona.value;
+    const detectado = obtenerEdificioDetectado();
+    const buildingId = detectado ? String(detectado.id) : "";
 
     if (!nombre || !buildingId) {
         mostrarMensaje(
-            "Completa tu nombre y selecciona un edificio.",
+            "Escribe tu nombre y espera a que el GPS detecte un edificio (con buena precisión).",
             "error"
         );
         return;
@@ -88,6 +90,7 @@ export async function registrarPersona(evento) {
             "Tu presencia se registró correctamente."
         );
 
+        establecerEdificioActual(creada.buildingId);
         iniciarActualizaciones();
 
         await actualizarTablaPersonas();
@@ -122,6 +125,7 @@ export async function recuperarPersona() {
             `Se recuperó tu registro, ${persona.name ?? "usuario"}.`
         );
 
+        establecerEdificioActual(persona.buildingId);
         iniciarActualizaciones();
 
     } catch (error) {
@@ -167,6 +171,7 @@ export async function salir() {
         );
 
         detenerActualizaciones();
+        detenerUbicacion();
 
         localStorage.removeItem(STORAGE_PERSONA_ID);
         establecerPersonaId(null);
