@@ -10,7 +10,8 @@ export async function solicitarAPI(endpoint, opciones = {}) {
 
     try {
         respuesta = await fetch(url, {
-            ...opciones,
+        cache: "no-store",
+        ...opciones,
             headers: {
                 ...(opciones.body
                     ? { "Content-Type": "application/json" }

@@ -48,26 +48,27 @@ export async function actualizarPresencia() {
 }
 
 export function iniciarActualizaciones() {
-    detenerActualizaciones();
+    // Latido: solo si no está corriendo (actualizarPresencia ya sale sola si no hay personaId)
+    if (intervaloPresencia === null) {
+        intervaloPresencia = setInterval(
+            actualizarPresencia,
+            INTERVALO_PRESENCIA
+        );
+    }
 
-    intervaloPresencia = setInterval(
-        actualizarPresencia,
-        INTERVALO_PRESENCIA
-    );
-
-    intervaloActualizacion = setInterval(() => {
-        actualizarTablaPersonas().catch(() => {});
-    }, INTERVALO_TABLA);
+    // Recarga de tabla: para todos los visitantes, registrados o no
+    if (intervaloActualizacion === null) {
+        intervaloActualizacion = setInterval(() => {
+            actualizarTablaPersonas().catch(() => {});
+        }, INTERVALO_TABLA);
+    }
 }
 
+// Detiene solo el latido; la tabla sigue actualizándose.
 export function detenerActualizaciones() {
     if (intervaloPresencia !== null) {
         clearInterval(intervaloPresencia);
         intervaloPresencia = null;
     }
-
-    if (intervaloActualizacion !== null) {
-        clearInterval(intervaloActualizacion);
-        intervaloActualizacion = null;
-    }
 }
+

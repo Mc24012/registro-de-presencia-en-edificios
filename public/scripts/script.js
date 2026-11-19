@@ -1,4 +1,4 @@
-
+import { iniciarActualizaciones, actualizarPresencia } from "./presencia.js";
 import { iniciarUbicacion } from "./ubicacion.js";
 import { inicializarMapa } from "./mapa.js";
 import { obtenerEdificios } from "./edificios.js";
@@ -15,6 +15,7 @@ import { estadoCarga } from "./dom.js";
 async function iniciarAplicacion() {
     configurarEventos();
     inicializarMapa();
+    iniciarActualizaciones();
 
     try {
         estadoCarga.textContent = "Conectando con el servidor...";
@@ -35,5 +36,10 @@ async function iniciarAplicacion() {
         );
     }
 }
-
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        actualizarPresencia();
+        actualizarTablaPersonas().catch(() => {});
+    }
+});
 iniciarAplicacion();
